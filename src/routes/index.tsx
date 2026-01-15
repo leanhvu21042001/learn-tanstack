@@ -1,37 +1,26 @@
+// src/routes/index.tsx
 import { createFileRoute } from '@tanstack/react-router'
-import '../App.css'
+import { getJokes } from '../serverActions/jokesActions'
+import { JokesList } from '../components/JokesList'
+import { JokeForm } from '../components/JokeForm'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  loader: async () => {
+    // Load jokes data when the route is accessed
+    return getJokes()
+  },
+  component: App,
+})
 
 function App() {
+  const jokes = Route.useLoaderData() || [];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img
-          src="/tanstack-circle-logo.png"
-          className="App-logo"
-          alt="TanStack Logo"
-        />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="App-link"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
+    <div className="max-w-2xl mx-auto py-12 px-4 space-y-6">
+      <h1 className="text-4xl font-bold text-center mb-10">DevJokes</h1>
+
+      <JokeForm />
+      <JokesList jokes={jokes} />
     </div>
-  )
+  );
 }
